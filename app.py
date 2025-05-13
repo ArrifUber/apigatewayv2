@@ -2,20 +2,19 @@ from flask import Flask, request, render_template, redirect, url_for, jsonify
 import boto3
 import os
 import requests
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 
-# dotenv_values()
-config = dotenv_values(".env")
+load_dotenv()
 
 app = Flask(__name__)
 
 # Konfigurasi AWS
-AWS_ACCESS_KEY_ID = config["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = config["AWS_SECRET_ACCESS_KEY"]
-AWS_SESSION_TOKEN = config["AWS_SESSION_TOKEN"]
-AWS_REGION = config["AWS_REGION"]
-S3_BUCKET = config["S3_BUCKET_NAME"]
-API_URL = config["API_GATEWAY_URL"]
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN")
+AWS_REGION = os.getenv("AWS_REGION")
+S3_BUCKET = os.getenv("S3_BUCKET_NAME")
+API_URL = os.getenv("API_GATEWAY_URL")
 
 s3_client = boto3.client(
     "s3",
@@ -40,12 +39,12 @@ def add_user():
     phone = request.form["phone"]
     image = request.files["image"]
 
-    # # 1️⃣ Cek apakah email sudah ada di database
-    # check_response = requests.get(f"{API_URL}?email={email}")
+    # 1️⃣ Cek apakah email sudah ada di database
+    check_response = requests.get(f"{API_URL}?email={email}")
     
-    # if check_response.status_code == 409:  # Jika email sudah ada
-    #     print("❌ Email already exists, stopping process")  # Debugging log
-    #     return jsonify({"error": "Email already exists"}), 409
+    if check_response.status_code == 409:  # Jika email sudah ada
+        print("❌ Email already exists, stopping process")  # Debugging log
+        return jsonify({"error": "Email already exists"}), 409
 
     # 2️⃣ Jika email belum ada, lanjut upload gambar
     image_url = ""
