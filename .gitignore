@@ -2,7 +2,7 @@
 LICENSE
 .env
 .env.*
-
+.venv
 app.py_
 
 .github/workflows/deploy.yml_
