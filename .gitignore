@@ -5,6 +5,8 @@ LICENSE
 .venv
 app.py_
 
+my-experiment
+
 .github/workflows/deploy.yml_
 .github/workflows/de.yml_
 .github/workflows/tes.yml
